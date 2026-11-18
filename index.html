@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#14161c">
+  <meta name="description" content="vCard Executive NFC — Cartão de Visitas Virtual Interativo 3D para Executivos com 12 Modelos Premium, Gravação Direta em Cartão Plástico NFC, QR Code e Salvar na Agenda.">
+  <title>vCard Executive NFC — 4u-Labs</title>
+  <link rel="icon" type="image/png" href="favicon.png?v=3.3">
+  <link rel="apple-touch-icon" href="icon-192.png?v=3.3">
+  <link rel="manifest" href="manifest.json?v=3.3">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3.3">
+  <style>
+    /* Critical NFC Receiver Mode, Compact Single-Row Header, 2-Line Footer & High-Contrast UI */
+    :root { --ui-accent: #00f5e1; }
+    .brand strong span,
+    .eyebrow,
+    .lang-btn.active,
+    .btn-pwa-install,
+    .dock-btn.create-cta {
+      color: #00f5e1 !important;
+    }
+    .dock-btn.create-cta {
+      border-color: #00f5e1 !important;
+    }
+    .btn-primary,
+    .btn-small.accent,
+    .face-tab.active,
+    .dock-btn.primary,
+    .nfc-tab.active {
+      background: #00f5e1 !important;
+      border-color: #00f5e1 !important;
+      color: #0b0f14 !important;
+    }
+    html.pure-nfc-mode #app-header,
+    html.pure-nfc-mode #nfc-visitor-bar,
+    html.pure-nfc-mode .stage-top-controls,
+    html.pure-nfc-mode #editor-panel,
+    html.pure-nfc-mode #app-footer,
+    body.pure-nfc-mode #app-header,
+    body.pure-nfc-mode #nfc-visitor-bar,
+    body.pure-nfc-mode .stage-top-controls,
+    body.pure-nfc-mode #editor-panel,
+    body.pure-nfc-mode #app-footer,
+    body.client-mode #editor-panel,
+    body.client-mode .stage-top-controls {
+      display: none !important;
+    }
+    html.pure-nfc-mode .workspace,
+    body.pure-nfc-mode .workspace,
+    body.client-mode .workspace {
+      grid-template-columns: 1fr !important;
+      max-width: 420px !important;
+      padding: 12px 10px 20px !important;
+      min-height: 100dvh;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .app-header {
+      padding: 7px 12px !important;
+      min-height: 46px !important;
+      gap: 8px !important;
+      flex-wrap: nowrap !important;
+    }
+    .header-actions {
+      display: flex !important;
+      align-items: center !important;
+      gap: 5px !important;
+      flex-wrap: nowrap !important;
+    }
+    .card-scene {
+      width: min(340px, calc(100vw - 24px)) !important;
+    }
+    .card-quick-dock {
+      display: flex !important;
+      flex-direction: column !important;
+      gap: 8px !important;
+      width: min(340px, calc(100vw - 24px)) !important;
+    }
+    .dock-row-main {
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 7px !important;
+      width: 100% !important;
+    }
+    .dock-row-extra {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 7px !important;
+      width: 100% !important;
+    }
+    .app-footer {
+      padding: 10px 12px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 6px !important;
+    }
+    .footer-line-1,
+    .footer-line-2 {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 10px !important;
+      flex-wrap: nowrap !important;
+      white-space: nowrap !important;
+      width: 100% !important;
+    }
+    @media (max-width: 720px) {
+      .hide-sm { display: none !important; }
+      .brand small { display: none !important; }
+      .brand-icon-img { width: 28px !important; height: 28px !important; border-radius: 7px !important; }
+      .brand strong { font-size: 15px !important; font-weight: 700 !important; white-space: nowrap !important; letter-spacing: -0.3px !important; }
+      .header-actions button { padding: 5px 8px !important; font-size: 11px !important; height: 30px !important; }
+      .btn-pwa-install { padding: 5px 8px !important; height: 30px !important; }
+    }
+    @media (max-width: 345px) {
+      .btn-pwa-install .pwa-label { display: none !important; }
+    }
+  </style>
+  <script>
+    if (/[?&](d|c)=/.test(window.location.search)) {
+      document.documentElement.classList.add('pure-nfc-mode');
+    }
+  </script>
+</head>
+<body>
+  <!-- Ultra-Compact Single-Line Top Bar -->
+  <header class="app-header" id="app-header">
+    <div class="brand">
+      <img src="icon-192.png?v=3.3" alt="vCard" class="brand-icon-img" width="32" height="32">
+      <div>
+        <strong>vCard</strong>
+        <small data-i18n="brandSub">CARTÃO DIGITAL NFC · 4u-Labs</small>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="lang-switch hide-sm" role="group" aria-label="Idioma / Language">
+        <button type="button" class="lang-btn active" data-lang="pt">PT</button>
+        <span>|</span>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+
+      <button type="button" class="btn-action btn-icon-only" id="btn-open-help" title="Guia de Uso / Help">
+        ?
+      </button>
+
+      <button type="button" class="btn-action hide-sm" id="btn-open-community" title="Ecossistema 4u-Labs">
+        4u-Labs ↗
+      </button>
+
+      <button type="button" class="btn-action" id="btn-toggle-mode" title="Alternar Modo Cliente NFC">
+        📱 <span class="hide-sm" data-i18n="viewAsClient">Cliente</span>
+      </button>
+
+      <button type="button" class="btn-action btn-pwa-install" id="btn-pwa-install" title="Instalar Aplicativo (PWA)">
+        <span class="pwa-icon">📲</span> <span class="pwa-label" data-i18n="installApp">Instalar</span>
+      </button>
+
+      <button type="button" class="btn-primary" id="btn-share-nfc" data-i18n="btnShareNfc">
+        📡 NFC & QR
+      </button>
+    </div>
+  </header>
+
+  <!-- NFC Visitor Banner (Shown only when opened via shared NFC Link) -->
+  <div class="nfc-visitor-bar" id="nfc-visitor-bar" hidden>
+    <span class="nfc-pulse-dot"></span>
+    <span data-i18n="visitorVerified">Cartão Executivo NFC verificado</span>
+    <button type="button" id="btn-visitor-create" data-i18n="visitorCreate">Criar meu cartão →</button>
+  </div>
+
+  <!-- Main Workspace -->
+  <main class="workspace" id="workspace">
+    <!-- Left / Center: Interactive 3D Phone Card Stage -->
+    <section class="card-stage-section">
+      <!-- Swipe / Face Switcher Pill -->
+      <div class="stage-top-controls">
+        <div class="face-tabs" role="tablist" aria-label="Lado do Cartão">
+          <button type="button" class="face-tab active" id="tab-front" data-face="front" data-i18n="tabFront">Frente do Cartão</button>
+          <button type="button" class="face-tab" id="tab-back" data-face="back" data-i18n="tabBack">Verso (Contatos)</button>
+        </div>
+        <span class="swipe-hint" data-i18n="swipeHint">👆 Passe o dedo no cartão para girar</span>
+      </div>
+
+      <!-- 3D Perspective Container -->
+      <div class="card-scene" id="card-scene" aria-label="Cartão de Visitas Interativo 3D">
+        <div class="card-3d" id="card-3d">
+          <!-- FRONT FACE (Rendered dynamically per selected Template 1..12) -->
+          <div class="card-face card-front" id="card-front">
+            <div class="card-glare" id="glare-front"></div>
+            <div class="card-template-mount" id="mount-front"></div>
+          </div>
+
+          <!-- BACK FACE (Rendered dynamically per selected Template 1..12) -->
+          <div class="card-face card-back" id="card-back">
+            <div class="card-glare" id="glare-back"></div>
+            <div class="card-template-mount" id="mount-back"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Quick Actions for Mobile Visitor / Executive -->
+      <div class="card-quick-dock">
+        <div class="dock-row-main">
+          <button type="button" class="dock-btn primary" id="btn-save-vcf" data-i18n="btnSaveVcf">
+            📥 Agenda
+          </button>
+          <a class="dock-btn whatsapp" id="btn-whatsapp-direct" href="https://wa.me/62000899992323" target="_blank" rel="noopener noreferrer">
+            💬 WhatsApp
+          </a>
+          <button type="button" class="dock-btn flip-outline" id="btn-flip-card" data-i18n="btnFlipCard">
+            🔄 Virar
+          </button>
+        </div>
+        <div class="dock-row-extra">
+          <button type="button" class="dock-btn share-outline" id="btn-quick-share-card" data-i18n="btnQuickShare">
+            📤 Compartilhar Cartão
+          </button>
+          <button type="button" class="dock-btn create-cta" id="btn-dock-create-card" data-i18n="btnDockCreate">
+            ✨ Criar Meu Cartão
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Panel: Executive Studio Editor -->
+    <aside class="editor-panel" id="editor-panel">
+      <div class="editor-card">
+        <div class="editor-header">
+          <div>
+            <span class="eyebrow" data-i18n="editorEyebrow">PERSONALIZAÇÃO EXECUTIVA</span>
+            <h2 data-i18n="editorTitle">Estúdio do Cartão NFC</h2>
+          </div>
+          <button type="button" class="btn-small" id="btn-reset-demo" data-i18n="btnResetDemo">Restaurar Demo</button>
+        </div>
+
+        <form id="card-form" autocomplete="off">
+          <!-- 1. Template Layout Selector (All 12 Reference Models) -->
+          <div class="form-section" style="border-top:0;padding-top:4px;margin-top:0">
+            <label class="section-label" data-i18n="sec1Label">1. Escolha o Modelo Vertical (12 Layouts Executivos)</label>
+            <div class="template-grid" id="template-grid">
+              <button type="button" class="template-card active" data-template="cyan-curve">
+                <div class="tpl-preview tpl-prev-1"><span></span><i></i><b></b></div>
+                <strong>1. Curva Cyan</strong>
+                <small>Clássico Dark & Curvas</small>
+              </button>
+              <button type="button" class="template-card" data-template="mono-sidebar">
+                <div class="tpl-preview tpl-prev-2"><span></span><i></i></div>
+                <strong>2. Grafite Minimal</strong>
+                <small>Faixa Lateral & Losangos</small>
+              </button>
+              <button type="button" class="template-card" data-template="teal-stripes">
+                <div class="tpl-preview tpl-prev-3"><span></span><b></b></div>
+                <strong>3. Teal Diagonal</strong>
+                <small>Faixas Duplas & QR</small>
+              </button>
+              <button type="button" class="template-card" data-template="red-band">
+                <div class="tpl-preview tpl-prev-4"><span></span><i></i></div>
+                <strong>4. Crimson Band</strong>
+                <small>Faixa Central & Bloco</small>
+              </button>
+              <button type="button" class="template-card" data-template="orange-column">
+                <div class="tpl-preview tpl-prev-5"><span></span><i></i></div>
+                <strong>5. Coral Executive</strong>
+                <small>Coluna & Cards Cinza</small>
+              </button>
+              <button type="button" class="template-card" data-template="blue-ribbon">
+                <div class="tpl-preview tpl-prev-6"><span></span><b></b></div>
+                <strong>6. Royal Ribbon</strong>
+                <small>Fita Superior & QR</small>
+              </button>
+              <button type="button" class="template-card" data-template="shield-banner">
+                <div class="tpl-preview tpl-prev-7"><span></span><b></b></div>
+                <strong>7. Escudo Pentágono</strong>
+                <small>Banner Topo & Base QR</small>
+              </button>
+              <button type="button" class="template-card" data-template="gold-bars">
+                <div class="tpl-preview tpl-prev-8"><i></i><span></span></div>
+                <strong>8. Gold 24k Listras</strong>
+                <small>Black & 3 Frisos Ouro</small>
+              </button>
+              <button type="button" class="template-card" data-template="gold-plaid">
+                <div class="tpl-preview tpl-prev-9"><span></span><b></b><i></i></div>
+                <strong>9. Gold Grid Imperial</strong>
+                <small>Linhas Cruzadas Ouro</small>
+              </button>
+              <button type="button" class="template-card" data-template="gold-script">
+                <div class="tpl-preview tpl-prev-10"><i>S</i><span></span></div>
+                <strong>10. Gold Arabesco</strong>
+                <small>Caligrafia & Floral Ouro</small>
+              </button>
+              <button type="button" class="template-card" data-template="cyan-frame">
+                <div class="tpl-preview tpl-prev-11"><span></span><b></b></div>
+                <strong>11. Moldura Bicolor</strong>
+                <small>Borda Dark & Painéis</small>
+              </button>
+              <button type="button" class="template-card" data-template="blue-shield-center">
+                <div class="tpl-preview tpl-prev-12"><span></span><i></i><b></b></div>
+                <strong>12. Escudo Blue Center</strong>
+                <small>Escudo Azul & Central</small>
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. Theme / Executive Palette -->
+          <div class="form-section">
+            <label class="section-label" data-i18n="sec2Label">2. Acabamento & Cor de Destaque</label>
+            <div class="palette-grid" id="palette-grid">
+              <button type="button" class="palette-swatch active" data-accent="#00f5e1" data-dark="#242424" data-box="#3b3b3b" title="Cyan Original">
+                <span style="background:#00f5e1"></span><small>Cyan</small>
+              </button>
+              <button type="button" class="palette-swatch" data-accent="#009ec2" data-dark="#252525" data-box="#383838" title="Teal Corporate">
+                <span style="background:#009ec2"></span><small>Teal</small>
+              </button>
+              <button type="button" class="palette-swatch" data-accent="#d32f2f" data-dark="#2b2b2b" data-box="#424242" title="Crimson Red">
+                <span style="background:#d32f2f"></span><small>Crimson</small>
+              </button>
+              <button type="button" class="palette-swatch" data-accent="#f05438" data-dark="#2b2b2b" data-box="#3d3d3d" title="Coral Orange">
+                <span style="background:#f05438"></span><small>Coral</small>
+              </button>
+              <button type="button" class="palette-swatch" data-accent="#008bd0" data-dark="#2c2c2c" data-box="#3e3e3e" title="Royal Blue">
+                <span style="background:#008bd0"></span><small>Royal</small>
+              </button>
+              <button type="button" class="palette-swatch" data-accent="#eab308" data-dark="#18181b" data-box="#2a2925" title="Ouro 24k Black">
+                <span style="background:linear-gradient(135deg,#fde047,#ca8a04)"></span><small>Ouro 24k</small>
+              </button>
+            </div>
+            <div class="custom-color-row">
+              <label><span data-i18n="lblAccentColor">Cor Principal:</span> <input type="color" id="input-custom-accent" value="#00f5e1"></label>
+              <label><span data-i18n="lblDarkColor">Cor Escura / Base:</span> <input type="color" id="input-custom-dark" value="#242424"></label>
+            </div>
+          </div>
+
+          <!-- 3. Brand Emblem / Logo Upload -->
+          <div class="form-section">
+            <label class="section-label" data-i18n="sec3Label">3. Símbolo / Logotipo da Empresa</label>
+            <div class="logo-selector-row">
+              <div class="emblem-presets" id="emblem-presets">
+                <button type="button" class="emblem-btn active" data-emblem="labyrinth" title="Labirinto Circular">◎ Labirinto</button>
+                <button type="button" class="emblem-btn" data-emblem="ribbon" title="Bandeira / Fita Executiva">🔖 Fita / Flag</button>
+                <button type="button" class="emblem-btn" data-emblem="hexprism" title="Hexágono Prisma">⬢ Hexágono</button>
+                <button type="button" class="emblem-btn" data-emblem="diamonde" title="Losango Geométrico E">❖ Losango E</button>
+                <button type="button" class="emblem-btn" data-emblem="goldr" title="Brasão Quadrado Luxury">▣ Brasão Gold</button>
+                <button type="button" class="emblem-btn" data-emblem="scripts" title="Monograma Caligráfico S">𝒮 Caligráfico</button>
+                <button type="button" class="emblem-btn" data-emblem="crown" title="Coroa Private">♛ Crown</button>
+                <button type="button" class="emblem-btn" data-emblem="monogram" title="Iniciais do Nome">🔤 Iniciais</button>
+              </div>
+              <label class="upload-logo-btn">
+                <span data-i18n="btnUploadLogo">📤 Enviar Minha Logo / Foto</span>
+                <input type="file" id="input-logo-file" accept="image/*" hidden>
+              </label>
+            </div>
+          </div>
+
+          <!-- 4. Company & Executive Identity -->
+          <div class="form-section">
+            <label class="section-label" data-i18n="sec4Label">4. Empresa & Executivo</label>
+            <div class="field-grid">
+              <label class="field">
+                <span data-i18n="lblCompany">Nome da Empresa</span>
+                <input type="text" id="input-company" value="COMPANY" maxlength="40" placeholder="Ex: 4U-LABS">
+              </label>
+              <label class="field">
+                <span data-i18n="lblTagline">Slogan / Tagline</span>
+                <input type="text" id="input-tagline" value="YOUR TAG SLOGAN" maxlength="60" placeholder="Ex: EXECUTIVE STRATEGY">
+              </label>
+              <label class="field">
+                <span data-i18n="lblName">Seu Nome Completo</span>
+                <input type="text" id="input-name" value="NAME SURNAME" maxlength="40" placeholder="Ex: FABIANO BRAGA">
+              </label>
+              <label class="field">
+                <span data-i18n="lblRole">Cargo / Título Executivo</span>
+                <input type="text" id="input-role" value="JOB POSITION" maxlength="40" placeholder="Ex: CEO & FOUNDER">
+              </label>
+              <label class="field full">
+                <span data-i18n="lblServices">Especialidades / Rodapé da Frente (ex: GRAPHIC . PRINT . WEB)</span>
+                <input type="text" id="input-services" value="GRAPHIC . PRINT . WEB" maxlength="60" placeholder="Ex: STRATEGY . AI . ADVISORY">
+              </label>
+            </div>
+          </div>
+
+          <!-- 5. Contact Channels (Back of Card) -->
+          <div class="form-section">
+            <label class="section-label" data-i18n="sec5Label">5. Dados de Contato (Verso Interativo)</label>
+            <div class="field-grid">
+              <label class="field">
+                <span data-i18n="lblPhone1">📞 Telefone Principal / WhatsApp</span>
+                <input type="tel" id="input-phone" value="+(000) 000 0000" maxlength="30" placeholder="+55 34 99999-0000">
+              </label>
+              <label class="field">
+                <span data-i18n="lblPhone2">📱 Telefone 2 / Comercial</span>
+                <input type="tel" id="input-phone2" value="+(000) 000 0000" maxlength="30" placeholder="+55 34 3222-0000">
+              </label>
+              <label class="field">
+                <span data-i18n="lblEmail">✉️ E-mail Executivo</span>
+                <input type="email" id="input-email" value="yourname@email.com" maxlength="60" placeholder="voce@empresa.com.br">
+              </label>
+              <label class="field">
+                <span data-i18n="lblWebsite">🌐 Website ou LinkedIn</span>
+                <input type="text" id="input-website" value="www.yourwebsite.com" maxlength="70" placeholder="www.suaempresa.com.br">
+              </label>
+              <label class="field full">
+                <span data-i18n="lblAddress">📍 Endereço Comercial (Duas linhas)</span>
+                <textarea id="input-address" rows="2" maxlength="110" placeholder="Country, City, Area&#10;Street, Building, Zip code">Country, City, Area
+Street, Building, Zip code</textarea>
+              </label>
+            </div>
+          </div>
+
+          <!-- 6. Direct NFC Hardware Studio Shortcut -->
+          <div class="form-section">
+            <label class="section-label" data-i18n="sec6Label">6. Estúdio de Cartão Físico NFC & QR Code</label>
+            <div class="nfc-inline-banner">
+              <div class="nfc-inline-info">
+                <strong data-i18n="nfcBannerTitle">Grave seu Cartão Plástico (NTAG213 / 215 / 216)</strong>
+                <span data-i18n="nfcBannerSub">Grave o Cartão 3D + Contato Offline, teste a leitura de chips e trave contra regravação.</span>
+              </div>
+              <button type="button" class="btn-primary" id="btn-open-nfc-studio" data-i18n="btnOpenNfcStudio">📡 Abrir Gravador NFC</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Standard 4u-Labs 2-Line Footer -->
+  <footer class="app-footer" id="app-footer">
+    <div class="footer-line-1">
+      <div class="footer-left">
+        <img src="icon-192.png?v=3.3" alt="vCard" width="18" height="18" style="border-radius:4px">
+        <span>© <span id="footer-year">2026</span> <strong>vCard NFC</strong> · 4u-Labs</span>
+      </div>
+      <div class="lang-switch footer-lang">
+        <button type="button" class="lang-btn active" data-lang="pt">PT</button>
+        <span>|</span>
+        <button type="button" class="lang-btn" data-lang="en">EN</button>
+      </div>
+    </div>
+    <div class="footer-line-2 footer-links">
+      <button type="button" class="footer-link-btn" id="footer-btn-community">4u-Labs ↗</button>
+      <button type="button" class="footer-link-btn" id="footer-btn-help" data-i18n="footerGuide">Guia</button>
+      <a href="privacy.html" data-i18n="footerPrivacy">Privacidade</a>
+      <a href="terms.html" data-i18n="footerTerms">Termos</a>
+      <a href="https://www.paypal.com/ncp/payment/L7YRCS984T33N" target="_blank" rel="noopener noreferrer" class="footer-donate" data-i18n="footerDonate">♡ Apoiar</a>
+    </div>
+  </footer>
+
+  <!-- Modal: Complete NFC Hardware Studio (Write, Read, Capacity Meter, Lock & QR Code) -->
+  <dialog id="dialog-share" class="modal modal-wide">
+    <div class="modal-header">
+      <h3 data-i18n="nfcModalTitle">📡 Estúdio NFC</h3>
+      <button type="button" class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <!-- Studio Mode Tabs -->
+      <div class="nfc-studio-tabs" role="tablist">
+        <button type="button" class="nfc-tab active" data-nfc-tab="write" data-i18n="nfcTabWrite">📲 Gravar Cartão NFC</button>
+        <button type="button" class="nfc-tab" data-nfc-tab="read" data-i18n="nfcTabRead">🔍 Ler / Testar Chip</button>
+        <button type="button" class="nfc-tab" data-nfc-tab="qr" data-i18n="nfcTabQr">🔗 Link & QR Code</button>
+      </div>
+
+      <!-- TAB 1: WRITE NFC CARD -->
+      <div class="nfc-tab-pane" id="nfc-pane-write">
+        <div class="field">
+          <span class="field-label" data-i18n="nfcWriteModeLbl">Modo de Gravação no Chip</span>
+          <select id="nfc-write-mode" style="position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px;" aria-hidden="true" tabindex="-1">
+            <option value="url" selected>⚡ Cartão 3D Interativo</option>
+            <option value="hybrid">💎 Duplo Híbrido</option>
+            <option value="vcard">📇 Contato Direto na Agenda</option>
+          </select>
+
+          <!-- Executive Mode Selection Cards -->
+          <div class="nfc-mode-cards" id="nfc-mode-cards" role="radiogroup">
+            <button type="button" class="nfc-mode-card active" data-mode="url" role="radio" aria-checked="true">
+              <span class="mode-card-icon">⚡</span>
+              <div class="mode-card-body">
+                <div class="mode-card-title">
+                  <strong data-i18n="nfcMode1Title">Cartão 3D Interativo</strong>
+                  <span class="mode-card-badge" data-i18n="nfcMode1Badge">Recomendado</span>
+                </div>
+                <div class="mode-card-desc" data-i18n="nfcMode1Desc">Abre Frente e Verso em qualquer celular (iPhone & Android)</div>
+              </div>
+              <span class="mode-card-radio"></span>
+            </button>
+
+            <button type="button" class="nfc-mode-card" data-mode="hybrid" role="radio" aria-checked="false">
+              <span class="mode-card-icon">💎</span>
+              <div class="mode-card-body">
+                <div class="mode-card-title">
+                  <strong data-i18n="nfcMode2Title">Duplo Híbrido</strong>
+                </div>
+                <div class="mode-card-desc" data-i18n="nfcMode2Desc">Cartão 3D Online + Contato vCard Offline</div>
+              </div>
+              <span class="mode-card-radio"></span>
+            </button>
+
+            <button type="button" class="nfc-mode-card" data-mode="vcard" role="radio" aria-checked="false">
+              <span class="mode-card-icon">📇</span>
+              <div class="mode-card-body">
+                <div class="mode-card-title">
+                  <strong data-i18n="nfcMode3Title">Contato Direto na Agenda</strong>
+                </div>
+                <div class="mode-card-desc" data-i18n="nfcMode3Desc">Salva direto nos contatos (100% Offline)</div>
+              </div>
+              <span class="mode-card-radio"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chip Memory / Byte Capacity Meter -->
+        <div class="chip-meter-card">
+          <div class="chip-meter-top">
+            <span><span data-i18n="ndefSizeLbl">Tamanho dos Dados NDEF:</span> <strong id="nfc-byte-count">0 bytes</strong></span>
+            <span class="chip-compat-badges" id="chip-compat-badges"></span>
+          </div>
+          <div class="chip-bar-track">
+            <div class="chip-bar-fill" id="chip-bar-fill"></div>
+          </div>
+          <small id="chip-meter-hint">Compatível com NTAG213 (144 B), NTAG215 (504 B) e NTAG216 (888 B)</small>
+        </div>
+
+        <!-- Animated NFC Radar Scanner -->
+        <div class="nfc-radar-box" id="nfc-write-radar" hidden>
+          <div class="radar-rings">
+            <span></span><span></span><span></span>
+            <div class="radar-core">📡</div>
+          </div>
+          <strong id="nfc-radar-title">Aproxime o Cartão Plástico NFC atrás do celular…</strong>
+          <small data-i18n="nfcHoldHint">Mantenha encostado por 1 segundo até ouvir o sinal</small>
+          <button type="button" class="btn-small" id="btn-cancel-nfc-op" data-i18n="btnCancel">Cancelar</button>
+        </div>
+
+        <output id="nfc-write-status" class="nfc-status" hidden></output>
+
+        <div class="nfc-action-buttons">
+          <button type="button" class="btn-primary full-btn" id="btn-write-nfc" data-i18n="btnWriteNfcNow">
+            📡 Gravar no Cartão NFC Agora
+          </button>
+          <button type="button" class="btn-action full-btn danger-outline" id="btn-lock-nfc" data-i18n="btnLockNfc">
+            🔒 Travar Cartão (Somente Leitura)
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 2: READ / INSPECT NFC CARD -->
+      <div class="nfc-tab-pane" id="nfc-pane-read" hidden>
+        <p class="modal-desc" data-i18n="nfcReadDesc">
+          Encoste qualquer cartão plástico ou tag NFC atrás do celular para verificar o número de série do chip (UID) e os dados gravados nele:
+        </p>
+
+        <button type="button" class="btn-primary full-btn" id="btn-start-read-nfc" data-i18n="btnStartReadNfc">
+          🔍 Ativar Leitor NFC e Encostar Cartão
+        </button>
+
+        <div class="nfc-read-result" id="nfc-read-result" hidden>
+          <div class="read-meta-row">
+            <span>UID: <strong id="read-uid">—</strong></span>
+            <span>Registros: <strong id="read-count">0</strong></span>
+          </div>
+          <div class="read-records-list" id="read-records-list"></div>
+          <button type="button" class="btn-small accent full-btn" id="btn-load-read-card" hidden data-i18n="btnLoadReadCard">
+            ✨ Carregar Este Cartão no Editor 3D
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 3: DIRECT LINK & QR CODE -->
+      <div class="nfc-tab-pane" id="nfc-pane-qr" hidden>
+        <div class="qr-preview-box">
+          <canvas id="qr-canvas" width="180" height="180"></canvas>
+          <small data-i18n="qrScanHint">Aponte a Câmera para abrir o cartão</small>
+        </div>
+
+        <label class="field">
+          <span data-i18n="shareLinkLbl">Link de Compartilhamento</span>
+          <div class="copy-input-row">
+            <input type="text" id="share-url-input" readonly>
+            <button type="button" class="btn-primary" id="btn-copy-link" data-i18n="btnCopyLink">Copiar Link</button>
+          </div>
+        </label>
+
+        <div class="share-direct-grid">
+          <a id="btn-share-whatsapp-card" href="#" target="_blank" rel="noopener noreferrer" class="dock-btn whatsapp full-btn" data-i18n="btnShareViaWhatsapp">
+            💬 Enviar Meu Cartão no WhatsApp
+          </a>
+          <button type="button" id="btn-native-share-card" class="btn-action full-btn" data-i18n="btnShareNative">
+            📲 Compartilhar Link (Menu do Celular)
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal: Visual Help & Guide -->
+  <dialog id="dialog-help" class="modal modal-wide">
+    <div class="modal-header">
+      <h3 data-i18n="helpModalTitle">📘 Guia Rápido — vCard Executive NFC</h3>
+      <button type="button" class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <div class="help-cards-grid">
+        <div class="help-card">
+          <strong>🔄 1. Cartão Vertical 3D Interativo</strong>
+          <p data-i18n="helpStep1">Escolha entre os 12 modelos executivos verticais. Passe o dedo na tela (ou arraste com o mouse) para girar em 3D entre a Frente e o Verso com seus contatos clicáveis.</p>
+        </div>
+        <div class="help-card">
+          <strong>📡 2. Como Gravar seu Cartão Plástico NFC</strong>
+          <p data-i18n="helpStep2">Compre um cartão PVC com chip NTAG213, NTAG215 ou NTAG216. Abra este app no Google Chrome do seu Android, clique em "Link NFC & QR Code" → "Gravar no Cartão NFC Agora" e encoste o plástico atrás do celular.</p>
+        </div>
+        <div class="help-card">
+          <strong>📲 3. O que acontece quando o cliente aproxima o celular?</strong>
+          <p data-i18n="helpStep3">O celular do cliente (iPhone ou Android) abre instantaneamente seu Cartão 3D na tela sem precisar instalar nada! Ele pode girar o cartão, chamar no WhatsApp ou clicar em "Salvar na Agenda".</p>
+        </div>
+        <div class="help-card">
+          <strong>🔒 4. Privacidade & Segurança</strong>
+          <p data-i18n="helpStep4">100% client-side: seus dados ficam salvos no seu navegador e codificados de forma compacta no próprio link ou chip NFC. Você também pode travar o chip contra regravações.</p>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Modal: Official 4u-Labs Cross-Promotion Hub (All 14 Required Links + PayPal) -->
+  <dialog id="dialog-community" class="modal modal-wide">
+    <div class="modal-header">
+      <h3 data-i18n="hubTitle">4u-Labs — Aplicativos, suporte e comunidade</h3>
+      <button type="button" class="modal-close" data-close>×</button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-desc" data-i18n="hubSub">Conheça o ecossistema 4u-Labs, acesse nossa loja de aplicativos web e acompanhe nossas redes oficiais:</p>
+
+      <h4 class="hub-group-title" data-i18n="hubGroupInst">Institucional & Ecossistema (6)</h4>
+      <div class="hub-grid">
+        <a href="https://4u.ia.br/" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>🌐 Portal 4U</strong>
+          <small>4u.ia.br</small>
+        </a>
+        <a href="https://4u.ia.br/loja/index.php" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>🛍️ Loja de Apps</strong>
+          <small>WebApps & Ferramentas</small>
+        </a>
+        <a href="https://4u.ia.br/suporte.html" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>🛟 Central de Ajuda</strong>
+          <small>Suporte & FAQ</small>
+        </a>
+        <a href="https://4u.ia.br/sobre.html" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>🏛️ Sobre 4U</strong>
+          <small>Nossa Missão</small>
+        </a>
+        <a href="https://4u.ia.br/termos.html" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>📜 Termos</strong>
+          <small>Termos de Serviço</small>
+        </a>
+        <a href="https://4u.ia.br/politica.html" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>🔒 Privacidade</strong>
+          <small>Política de Dados</small>
+        </a>
+      </div>
+
+      <h4 class="hub-group-title" data-i18n="hubGroupSocial">Comunidade, Código & Redes (8)</h4>
+      <div class="hub-grid">
+        <a href="https://github.com/4u-Labs" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>💻 GitHub</strong>
+          <small>github.com/4u-Labs</small>
+        </a>
+        <a href="https://4u-labs.github.io/" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>✍️ Blog Dev</strong>
+          <small>Artigos & Engenharia</small>
+        </a>
+        <a href="https://alternativeto.net/user/4u-ia-br/added/" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>⭐ AlternativeTo</strong>
+          <small>Catálogo Global</small>
+        </a>
+        <a href="https://www.youtube.com/@fbr4g4" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>▶️ YouTube</strong>
+          <small>@fbr4g4</small>
+        </a>
+        <a href="https://www.instagram.com/fbr4g4/" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>📸 Instagram</strong>
+          <small>@fbr4g4</small>
+        </a>
+        <a href="https://www.facebook.com/fbr4g4/" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>📘 Facebook</strong>
+          <small>@fbr4g4</small>
+        </a>
+        <a href="https://x.com/fbr4g4" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>𝕏 X / Twitter</strong>
+          <small>@fbr4g4</small>
+        </a>
+        <a href="https://www.linkedin.com/in/fbr4g4/" target="_blank" rel="noopener noreferrer" class="hub-card">
+          <strong>💼 LinkedIn</strong>
+          <small>/in/fbr4g4</small>
+        </a>
+      </div>
+
+      <div class="hub-donate-box">
+        <div>
+          <strong data-i18n="donateBoxTitle">♡ Apoie o desenvolvimento gratuito da 4u-Labs</strong>
+          <span data-i18n="donateBoxSub">Sua contribuição mantém nossos aplicativos 100% gratuitos e sem anúncios.</span>
+        </div>
+        <a href="https://www.paypal.com/ncp/payment/L7YRCS984T33N" target="_blank" rel="noopener noreferrer" class="btn-primary">
+          ♡ PayPal Support
+        </a>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" hidden></div>
+  <script src="qrcode.min.js?v=3.3"></script>
+  <script src="app.js?v=3.3"></script>
+</body>
+</html>
